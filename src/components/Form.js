@@ -7,7 +7,6 @@ import {
   retrieveSchema,
   shouldRender,
   toIdSchema,
-  setState,
   getDefaultRegistry,
   deepEquals,
 } from "../utils";
@@ -139,11 +138,12 @@ export default class Form extends Component {
         errors: toErrorList(newErrorSchema),
       };
     }
-    setState(this, state, () => {
-      if (this.props.onChange) {
-        this.props.onChange(this.state);
-      }
-    });
+    // backported from v2
+    // https://github.com/rjsf-team/react-jsonschema-form/pull/1454
+    this.setState(
+      state,
+      () => this.props.onChange && this.props.onChange(state)
+    );
   };
 
   onBlur = (...args) => {
@@ -165,7 +165,9 @@ export default class Form extends Component {
     if (!this.props.noValidate) {
       const { errors, errorSchema } = this.validate(this.state.formData);
       if (Object.keys(errors).length > 0) {
-        setState(this, { errors, errorSchema }, () => {
+        // backported from v2
+        // https://github.com/rjsf-team/react-jsonschema-form/pull/1454
+        this.setState({ errors, errorSchema }, () => {
           if (this.props.onError) {
             this.props.onError(errors);
           } else {
