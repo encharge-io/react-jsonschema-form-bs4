@@ -603,47 +603,51 @@ class ArrayField extends Component {
       disabled,
       idSchema,
       formData,
-      items: items.map((item, index) => {
-        const additional = index >= itemSchemas.length;
-        // SLAV - check for additional items schema here, to prevent crashes
-        // when schema is missing for extra items in array
-        const itemSchema =
-          additional && schema.additionalItems
-            ? retrieveSchema(schema.additionalItems, definitions, item)
-            : itemSchemas[index];
-        if (!itemSchema) {
-          return null;
-        }
-        const itemIdPrefix = idSchema.$id + "_" + index;
-        const itemIdSchema = toIdSchema(
-          itemSchema,
-          itemIdPrefix,
-          definitions,
-          item,
-          idPrefix
-        );
-        const itemUiSchema = additional
-          ? uiSchema.additionalItems || {}
-          : Array.isArray(uiSchema.items)
-          ? uiSchema.items[index]
-          : uiSchema.items || {};
-        const itemErrorSchema = errorSchema ? errorSchema[index] : undefined;
+      items: !items.map
+        ? []
+        : items.map((item, index) => {
+            const additional = index >= itemSchemas.length;
+            // SLAV - check for additional items schema here, to prevent crashes
+            // when schema is missing for extra items in array
+            const itemSchema =
+              additional && schema.additionalItems
+                ? retrieveSchema(schema.additionalItems, definitions, item)
+                : itemSchemas[index];
+            if (!itemSchema) {
+              return null;
+            }
+            const itemIdPrefix = idSchema.$id + "_" + index;
+            const itemIdSchema = toIdSchema(
+              itemSchema,
+              itemIdPrefix,
+              definitions,
+              item,
+              idPrefix
+            );
+            const itemUiSchema = additional
+              ? uiSchema.additionalItems || {}
+              : Array.isArray(uiSchema.items)
+              ? uiSchema.items[index]
+              : uiSchema.items || {};
+            const itemErrorSchema = errorSchema
+              ? errorSchema[index]
+              : undefined;
 
-        return this.renderArrayFieldItem({
-          index,
-          canRemove: additional,
-          canMoveUp: index >= itemSchemas.length + 1,
-          canMoveDown: additional && index < items.length - 1,
-          itemSchema,
-          itemData: item,
-          itemUiSchema,
-          itemIdSchema,
-          itemErrorSchema,
-          autofocus: autofocus && index === 0,
-          onBlur,
-          onFocus,
-        });
-      }),
+            return this.renderArrayFieldItem({
+              index,
+              canRemove: additional,
+              canMoveUp: index >= itemSchemas.length + 1,
+              canMoveDown: additional && index < items.length - 1,
+              itemSchema,
+              itemData: item,
+              itemUiSchema,
+              itemIdSchema,
+              itemErrorSchema,
+              autofocus: autofocus && index === 0,
+              onBlur,
+              onFocus,
+            });
+          }),
       onAddClick: this.onAddClick,
       readonly,
       required,
