@@ -45,7 +45,7 @@
     "react": ">=15"
   },
   "dependencies": {
-    "@types/json-schema": "*",
+    "@types/json-schema": "7.0.15",
     "@types/react": "*",
     "ajv": "^6.7.0",
     "babel-runtime": "^6.26.0",
